@@ -40,7 +40,7 @@ def auto_crop_card(image_path, output_path, target_ratio=2.5/3.5):
     # Get the minimum area rectangle
     rect = cv2.minAreaRect(largest_contour)
     box = cv2.boxPoints(rect)
-    box = np.int0(box)
+    box = np.int32(box)
     
     # Get width and height of the detected rectangle
     width = int(rect[1][0])
