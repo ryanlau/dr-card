@@ -2,6 +2,7 @@ import requests
 import json
 import csv
 from datetime import datetime
+import os
 
 def hex_encode_payload(spec_id):
     # Create the payload dictionary
@@ -26,6 +27,28 @@ def fetch_psa_data(spec_id):
         raise Exception(f"Failed to fetch data: {response.status_code}")
     
     return response.json()
+
+def download_image(image_url, cert_number):
+    if not image_url:
+        return
+        
+    # Create pictures directory if it doesn't exist
+    os.makedirs('pictures', exist_ok=True)
+    
+    # Extract file extension from URL, default to .jpg if none found
+    file_extension = os.path.splitext(image_url)[1] or '.jpg'
+    filename = f'pictures/cert_{cert_number}{file_extension}'
+    
+    try:
+        response = requests.get(image_url, stream=True)
+        response.raise_for_status()
+        
+        with open(filename, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        print(f"Downloaded image for cert {cert_number}")
+    except Exception as e:
+        print(f"Failed to download image for cert {cert_number}: {str(e)}")
 
 def save_to_csv(data, output_file):
     # Extract the individual sales from the response
@@ -58,6 +81,8 @@ def save_to_csv(data, output_file):
                 'salePrice': sale['salePrice'],
                 'certNumber': sale['certNumber']
             })
+            # Download the image for this sale
+            download_image(sale['imageUrl'], sale['certNumber'])
 
 def main():
     # Example spec_id - replace with your desired ID
