@@ -7,6 +7,7 @@ export default function ScannerSection() {
   const [scrollPosition, setScrollPosition] = useState(0)
   const sectionRef = useRef<HTMLElement>(null)
   const [scannerComplete, setScannerComplete] = useState(false)
+  const startScrollY = useRef(0)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,29 +16,24 @@ export default function ScannerSection() {
         const sectionHeight = sectionRef.current.offsetHeight
         const viewportHeight = window.innerHeight
 
-        // Calculate raw scroll progress
-        const rawProgress = (-rect.top / (sectionHeight - viewportHeight)) * 100
+        let progress: number
 
-        // Control the scroll progression
-        let progress
-        if (rawProgress <= 100) {
-          // Normal scroll until scanner reaches bottom
-          progress = rawProgress
-        } else if (rawProgress <= 150) {
-          // Create a "sticky" section for text transition
-          // Keep progress at 100-115 range until raw progress reaches 150
-          progress = 100 + (rawProgress - 100) / 5
+        if (!scannerComplete) {
+          // Scanner phase (0-100%)
+          const rawProgress = (-rect.top / (sectionHeight - viewportHeight)) * 100
+          progress = Math.max(0, Math.min(100, rawProgress))
+          
+          if (progress >= 100) {
+            setScannerComplete(true)
+            startScrollY.current = window.scrollY
+          }
         } else {
-          // Resume normal scrolling after transition
-          progress = rawProgress
+          // Text transition phase (100-200%)
+          const delta = Math.max(0, window.scrollY - startScrollY.current)
+          progress = 100 + (delta / 10) // 1000px = 100% (1000/10=100)
         }
 
-        progress = Math.max(0, Math.min(300, progress))
         setScrollPosition(progress)
-
-        if (progress >= 100 && !scannerComplete) {
-          setScannerComplete(true)
-        }
       }
     }
 
@@ -49,22 +45,18 @@ export default function ScannerSection() {
     }
   }, [scannerComplete])
 
-  // First text block animations
-  const firstTextOpacity = scrollPosition <= 100 ? 1 : Math.max(0, 1 - (scrollPosition - 100) / 7)
+  // First text fades out during first 10% of text transition
+  const firstTextOpacity = Math.max(0, 1 - (scrollPosition - 100) / 10)
 
-  // Second text block animations
-  const secondTextOpacity = scrollPosition < 107 ? 0 : Math.min(1, (scrollPosition - 107) / 7)
-
-  // Keep second text centered until much later
-  const secondTextTransform = scrollPosition > 200 ? `translateY(${-(scrollPosition - 200) * 0.5}px)` : "translateY(0)"
+  // Second text fades in during first 10% and stays visible
+  const secondTextOpacity = Math.min(1, (scrollPosition - 100) / 10)
 
   return (
     <section
       ref={sectionRef}
       className="relative scroll-smooth"
       style={{
-        height: "800vh",
-        // Force a new stacking context
+        height: "calc(400vh + 1000px)", // Add 1000px for extended hold
         isolation: "isolate",
       }}
       id="scanner"
@@ -76,27 +68,29 @@ export default function ScannerSection() {
             <div className="w-1/2 relative aspect-[3/4] rounded-xl overflow-hidden">
               <Image
                 src="/placeholder.svg?height=800&width=600"
-                alt="Descriptive alt text"
+                alt="Scan visualization"
                 fill
                 className="object-cover"
                 priority
               />
-              {/* Scanner line */}
-              <div
-                className="absolute inset-x-0 h-1 bg-gradient-to-r from-primary to-primary-foreground z-10 transition-transform duration-100 ease-linear shadow-lg"
-                style={{ top: `${Math.min(100, scrollPosition)}%` }}
-              />
+              {/* Scanner line - only visible during scanning phase */}
+              {!scannerComplete && (
+                <div
+                  className="absolute inset-x-0 h-1 bg-gradient-to-r from-primary to-primary-foreground z-10 transition-transform duration-100 ease-linear shadow-lg"
+                  style={{ top: `${scrollPosition}%` }}
+                />
+              )}
             </div>
 
             {/* Text container */}
             <div className="w-1/2 flex items-center">
-              <div className="relative w-full">
+              <div className="relative w-full h-48">
                 {/* First text block */}
                 <div
                   className="max-w-lg transition-all duration-300 ease-out absolute"
                   style={{
                     opacity: firstTextOpacity,
-                    transform: "translateY(0)",
+                    pointerEvents: firstTextOpacity > 0 ? 'auto' : 'none',
                   }}
                 >
                   <h2 className="text-4xl font-bold mb-4">Welcome to Our Innovation</h2>
@@ -113,13 +107,17 @@ export default function ScannerSection() {
                 <div
                   className="max-w-lg transition-all duration-300 ease-out absolute"
                   style={{
-                    transform: secondTextTransform,
                     opacity: secondTextOpacity,
+                    pointerEvents: secondTextOpacity > 0 ? 'auto' : 'none',
+                    transform: `translateY(${Math.max(0, (scrollPosition - 150) * 0.2)}px)`,
                   }}
                 >
                   <div className="bg-background/95 backdrop-blur-sm p-6 rounded-xl shadow-lg">
                     <h2 className="text-4xl font-bold mb-6">Scan Complete</h2>
                     <div className="space-y-4">
+                      {/* ... rest of your scan results content ... */}
+
+
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground">Processing Speed</span>
@@ -160,4 +158,3 @@ export default function ScannerSection() {
     </section>
   )
 }
-

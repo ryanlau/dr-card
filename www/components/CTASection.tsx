@@ -10,11 +10,11 @@ export default function CTASection() {
             Experience our revolutionary scanning technology that's changing how businesses handle information.
           </p>
           <Link
-            href="#scanner"
+            href="/demo"
             className="bg-background text-foreground px-8 py-3 rounded-full font-semibold 
                      hover:bg-background/90 transition-colors inline-block"
           >
-            See It In Action
+            Try it now
           </Link>
         </div>
       </div>
