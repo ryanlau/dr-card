@@ -86,7 +86,7 @@ def save_to_csv(data, output_file):
 
 def main():
     # Example spec_id - replace with your desired ID
-    spec_id =  190786
+    spec_id =  190785
     
     try:
         # Fetch the data
