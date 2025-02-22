@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import Dataset, DataLoader, random_split, Subset
 from torchvision import transforms
 import numpy as np
 import cv2
@@ -11,6 +11,8 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 import os
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+from typing import List, Tuple
 
 class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
@@ -289,6 +291,77 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, device, n
                 'val_iou': val_iou,
             }, f'model_checkpoint_epoch_{epoch+1}.pth')
 
+def denormalize_image(image: torch.Tensor) -> np.ndarray:
+    """Convert normalized tensor back to numpy image."""
+    mean = np.array([0.485, 0.456, 0.406])
+    std = np.array([0.229, 0.224, 0.225])
+    
+    image = image.cpu().numpy().transpose(1, 2, 0)
+    image = std * image + mean
+    image = np.clip(image, 0, 1)
+    return (image * 255).astype(np.uint8)
+
+def visualize_predictions(model: nn.Module, 
+                        val_dataset: Dataset, 
+                        device: torch.device,
+                        num_samples: int = 5,
+                        output_dir: str = 'validation_results') -> None:
+    """Visualize model predictions on validation samples."""
+    os.makedirs(output_dir, exist_ok=True)
+    model.eval()
+    
+    # Create a small subset of validation data
+    indices = np.random.choice(len(val_dataset), min(num_samples, len(val_dataset)), replace=False)
+    subset = Subset(val_dataset, indices)
+    
+    with torch.no_grad():
+        for idx, (image, mask) in enumerate(subset):
+            # Add batch dimension
+            image = image.unsqueeze(0).to(device)
+            mask = mask.unsqueeze(0).to(device)
+            
+            # Get prediction
+            pred = model(image)
+            
+            # Convert tensors to numpy arrays
+            image = denormalize_image(image[0])
+            mask = mask[0, 0].cpu().numpy()
+            pred = (pred[0, 0].cpu().numpy() > 0.5).astype(np.float32)
+            
+            # Create visualization
+            plt.figure(figsize=(15, 5))
+            
+            plt.subplot(131)
+            plt.imshow(image)
+            plt.title('Original Image')
+            plt.axis('off')
+            
+            plt.subplot(132)
+            plt.imshow(mask, cmap='gray')
+            plt.title('Ground Truth Mask')
+            plt.axis('off')
+            
+            plt.subplot(133)
+            plt.imshow(pred, cmap='gray')
+            plt.title('Predicted Mask')
+            plt.axis('off')
+            
+            plt.tight_layout()
+            plt.savefig(os.path.join(output_dir, f'prediction_{idx}.png'))
+            plt.close()
+            
+            # Also save the masked image
+            masked_pred = image.copy()
+            masked_pred[pred == 0] = 0
+            
+            plt.figure(figsize=(5, 5))
+            plt.imshow(masked_pred)
+            plt.title('Masked Prediction')
+            plt.axis('off')
+            plt.tight_layout()
+            plt.savefig(os.path.join(output_dir, f'masked_{idx}.png'))
+            plt.close()
+
 def main():
     # Set device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -351,6 +424,11 @@ def main():
         print("\nFinal Validation Results:")
         print(f"Loss: {final_val_loss:.4f}")
         print(f"IoU: {final_val_iou:.4f}")
+        
+        # Visualize predictions on validation subset
+        print("\nGenerating validation visualizations...")
+        visualize_predictions(model, val_dataset, device, num_samples=5)
+        print("Validation visualizations saved in 'validation_results' directory")
         
         # Save final model
         torch.save(model.state_dict(), 'card_cropper_final.pth')
