@@ -131,7 +131,7 @@ const ImageProcessor = () => {
 			case 0:
 				return (
 					<div className="flex flex-col items-center gap-4">
-						<h2 className="text-2xl font-bold">Upload an Image of a Card</h2>
+						<h2 className="text-2xl font-bold">Upload an Image of a card</h2>
 						<Input type="file" accept="image/*" onChange={handleImageUpload} className="max-w-sm" />
 					</div>
 				)

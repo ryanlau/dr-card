@@ -18,14 +18,14 @@ export default function TestimonialsSection() {
   ]
 
   return (
-    <section className="py-20 bg-muted">
+    <section className="py-20 bg-theme-beige">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
+        <h2 className="text-3xl font-bold text-center mb-12 text-theme-green">What Our Clients Say</h2>
         <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-background p-6 rounded-lg shadow-md">
+            <div key={index} className="bg-white p-6 rounded-lg shadow-md">
               <p className="text-muted-foreground mb-4">"{testimonial.quote}"</p>
-              <div className="font-semibold">{testimonial.name}</div>
+              <div className="font-semibold text-theme-green">{testimonial.name}</div>
               <div className="text-sm text-muted-foreground">{testimonial.role}</div>
             </div>
           ))}
@@ -34,4 +34,3 @@ export default function TestimonialsSection() {
     </section>
   )
 }
-
