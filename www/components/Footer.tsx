@@ -6,12 +6,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">About Us</h3>
             <p className="text-theme-beige/80">
-<<<<<<< Updated upstream
             We are innovators in AI-driven sports card grading, making the hobby more accessible, transparent, and fair for collectors everywhere.            </p>
-=======
-              We are pioneers in card scanner technology, revolutionizing data processing for card collectors worldwide.
-            </p>
->>>>>>> Stashed changes
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
@@ -46,19 +41,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-theme-beige/20 text-center text-theme-beige/80">
-<<<<<<< Updated upstream
-        © 2024 GradeRef. All rights reserved.
-
-
-
-
-
-
-
-
-=======
           © 2025 GradeRef Inc. All rights reserved.
->>>>>>> Stashed changes
         </div>
       </div>
     </footer>

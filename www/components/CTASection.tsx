@@ -5,15 +5,9 @@ export default function CTASection() {
     <section className="relative bg-theme-green text-theme-beige py-20">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl">
-<<<<<<< Updated upstream
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Estimate the PSA grading.</h1>
-          <p className="text-xl mb-8 text-theme-beige/90">
-            Experience our revolutionary scanning technology that's changing the way grading sports cards work.
-=======
           <h1 className="text-4xl md:text-5xl font-bold mb-4">GradeRef</h1>
           <p className="text-xl mb-8 text-theme-beige/90">
             Experience our revolutionary card grading technology that's changing how card collectors assess, value, and trade their cards with confidence and transparency.
->>>>>>> Stashed changes
           </p>
           <Link
             href="/demo"
