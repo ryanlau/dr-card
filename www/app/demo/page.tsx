@@ -8,13 +8,31 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
 
+const data = {
+  "LeBronJames.jpg" : {
+    "raw_price" : 1000,
+    "graded_price" : 1500,
+    "grade" : 9
+  }, 
+  "PatrickMahomes.jpg" : {
+    "raw_price" : 45,
+    "graded_price" : 90,
+    "grade" : 8
+  }, 
+  "AaronJudge.jpg" : {
+    "raw_price" : 456,
+    "graded_price" : 1500,
+    "grade" : 10
+  }, 
+}
+
 const ImageProcessor = () => {
   const [step, setStep] = useState(0)
   const [image, setImage] = useState<string | null>(null)
   const [description, setDescription] = useState("")
   const [progress, setProgress] = useState(0)
   const [isProcessing, setIsProcessing] = useState(false)
-
+  
   const handleImageUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
@@ -26,6 +44,7 @@ const ImageProcessor = () => {
       }
       reader.readAsDataURL(file)
     }
+    
   }, [])
 
   const simulateProcessing = useCallback(() => {
