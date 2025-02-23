@@ -5,8 +5,10 @@ from datetime import datetime
 import os
 import random
 from multiprocessing import Pool
+import concurrent.futures
+import time
 
-folder = "scrape/pictures3"
+folder = "scrape/pictures4"
 def hex_encode_payload(data):
     # Convert to JSON string and encode to hex
     json_str = json.dumps(data)
@@ -173,39 +175,53 @@ def save_to_csv(data, output_file, spec_info, max_images=10, append=False):
             pool.starmap(download_image, download_tasks)
             print(f"Downloaded {len(download_tasks)} images in parallel")
 
+def process_single_spec(spec):
+    spec_id = spec['specId']
+    print(f"\nProcessing spec {spec_id}: {spec['collectibleDescription']}")
+    
+    try:
+        page_size = 10
+        # Fetch the data for this spec
+        data = fetch_psa_data(spec_id, page_number=1, page_size=page_size)
+        
+        # Save to CSV and download up to 10 images
+        save_to_csv(data, "psa_sales4.csv", spec_info=spec, max_images=page_size, append=True)
+        print(f"Data successfully appended for spec {spec_id}")
+        
+    except Exception as e:
+        print(f"Error processing spec {spec_id}: {str(e)}")
+
 def main():
     try:
         # Generate single output filename with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_file = f"psa_sales.csv"
+        output_file = f"psa_sales4.csv"
         
         specs = []
         # Search for baseball cards
         # Spread out throughout the years, 2000-2020
         for i in range(1, 30):
-            search_results = search_psa_cards(page_number=1, search_term=f"{1980 + i}")
+            search_results = search_psa_cards(page_number=1, search_term=f"{1950 + i}")
             specs.extend(search_results)
             # scramble the mix
             random.shuffle(specs)
+            
         print(f"Found {len(specs)} total specs")
         
-        # Process each spec
-        for i, spec in enumerate(specs):
-            spec_id = spec['specId']
-            print(f"\nProcessing spec {spec_id}: {spec['collectibleDescription']} ({i+1}/{len(specs)})")
-            
-            try:
-                page_size = 10
-                # Fetch the data for this spec
-                data = fetch_psa_data(spec_id, page_number=1, page_size=page_size)
+        # Process specs in batches of 5
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            for i in range(0, len(specs), 5):
+                batch = specs[i:i+5]
+                print(f"\nProcessing batch {i//5 + 1}/{(len(specs) + 4)//5}")
                 
-                # Save to CSV and download up to 10 images
-                save_to_csv(data, output_file, spec_info=spec, max_images=page_size, append=(i > 0))
-                print(f"Data successfully appended to {output_file}")
+                # Submit batch of 5 specs for concurrent processing
+                futures = [executor.submit(process_single_spec, spec) for spec in batch]
+                concurrent.futures.wait(futures)
                 
-            except Exception as e:
-                print(f"Error processing spec {spec_id}: {str(e)}")
-                continue
+                # Wait 5 seconds between batches
+                if i + 5 < len(specs):  # Don't wait after the last batch
+                    print("Waiting 2 seconds before next batch...")
+                    time.sleep(2)
             
     except Exception as e:
         print(f"Error: {str(e)}")
