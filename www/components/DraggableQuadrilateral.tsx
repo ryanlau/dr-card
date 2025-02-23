@@ -13,9 +13,10 @@ type Point = {
 interface DraggableQuadrilateralProps {
   image: string
   data: any
+  showPoints: boolean
 }
 
-const DraggableQuadrilateral: React.FC<DraggableQuadrilateralProps> = ({ image, data }) => {
+const DraggableQuadrilateral: React.FC<DraggableQuadrilateralProps> = ({ image, data, showPoints }) => {
   const startingPoints = data.points
   const containerRef = useRef<HTMLDivElement>(null)
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 })
@@ -160,7 +161,7 @@ const DraggableQuadrilateral: React.FC<DraggableQuadrilateralProps> = ({ image, 
         </svg>
 
         {/* Draggable Points */}
-        {points.map((point) => (
+        {showPoints && points.map((point) => (
           <div
             key={point.id}
             className="absolute cursor-move bg-white border-2 border-blue-500 rounded-full hover:bg-blue-100 transition-colors"

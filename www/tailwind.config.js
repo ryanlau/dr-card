@@ -50,8 +50,9 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        // Custom theme colors
+        'theme-green': '#3A855D',
+        'theme-beige': '#F1F1F1',
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -99,4 +100,3 @@ module.exports = {
   },
   plugins: [require("tailwindcss-animate")],
 }
-

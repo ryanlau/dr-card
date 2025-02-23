@@ -2,30 +2,31 @@ export default function TestimonialsSection() {
   const testimonials = [
     {
       name: "John Doe",
-      role: "CEO, TechCorp",
-      quote: "This scanner technology has transformed our data processing capabilities.",
+      role: "Collector & Hobbyist",
+      quote: "This grading technology has completely changed the way I approach my collection—fast, fair, and incredibly accurate.",
     },
     {
       name: "Jane Smith",
-      role: "CTO, InnovateCo",
-      quote: "We've seen a 50% increase in efficiency since implementing this solution.",
+      role: "Sports Memorabilia Dealer",
+      quote: "With instant AI-driven grading, I can now make more informed buying and selling decisions without the long wait times.",
     },
     {
       name: "Alex Johnson",
-      role: "Data Scientist, AnalyticsPro",
-      quote: "The accuracy and speed of this scanner are unparalleled in the industry.",
+      role: "Trading Card Investor",
+      quote: "Finally, a grading system that removes the subjectivity and makes sports card investing more transparent and accessible.",
     },
   ]
 
+
   return (
-    <section className="py-20 bg-muted">
+    <section className="py-20 bg-theme-beige">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
+        <h2 className="text-3xl font-bold text-center mb-12 text-theme-green">What Our Clients Say</h2>
         <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-background p-6 rounded-lg shadow-md">
-              <p className="text-muted-foreground mb-4">"{testimonial.quote}"</p>
-              <div className="font-semibold">{testimonial.name}</div>
+            <div key={index} className="bg-white p-6 rounded-lg shadow-md">
+              <p className="text-muted-foreground mb-4 text-black">"{testimonial.quote}"</p>
+              <div className="font-semibold text-theme-green">{testimonial.name}</div>
               <div className="text-sm text-muted-foreground">{testimonial.role}</div>
             </div>
           ))}
@@ -34,4 +35,3 @@ export default function TestimonialsSection() {
     </section>
   )
 }
-
