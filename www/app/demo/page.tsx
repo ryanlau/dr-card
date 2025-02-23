@@ -132,7 +132,7 @@ const ImageProcessor = () => {
 				return (
 					<div className="flex flex-col items-center gap-4">
 						<h2 className="text-2xl font-bold">Upload an Image of a card</h2>
-						<Input type="file" accept="image/*" onChange={handleImageUpload} className="max-w-sm" />
+						<Input type="file" accept="image/*" onChange={handleImageUpload} className="max-w-sm cursor-pointer" />
 					</div>
 				)
 			case 1:
@@ -148,7 +148,7 @@ const ImageProcessor = () => {
 						<h2 className="text-2xl font-bold">Card Identified</h2>
 						{/* 
             // @ts-ignore */}
-						<DraggableQuadrilateral image={image!} data={data[fileName]} />
+						<DraggableQuadrilateral showPoints={true} image={image!} data={data[fileName]} />
 						<Input
 							// @ts-ignore
 							value={data[fileName]["cardName"]}
@@ -162,7 +162,7 @@ const ImageProcessor = () => {
 			case 3:
 				return (
 					<div className="flex flex-col items-center gap-4">
-						<h2 className="text-2xl font-bold">Final Processing</h2>
+						<h2 className="text-2xl font-bold">Assessing your card</h2>
 						<Progress value={progress} className="w-[60%]" />
 					</div>
 				)
@@ -171,28 +171,38 @@ const ImageProcessor = () => {
 					<div className="flex flex-col gap-4">
 						<h2 className="text-2xl font-bold">Results</h2>
 						<div className="rounded-lg">
-							{/* 
-              // @ts-ignore */}
-							<p className="">{data[fileName]["summary"]}</p>
-							<br></br>
+              <div className="flex grid-cols-5 gap-8">
+                <div className="col-span-2">
+                  {/* 
+                  // @ts-ignore */}
+                  <DraggableQuadrilateral showPoints={false} image={image!} data={data[fileName]} />
+                </div>
 
-							{/* 
-              // @ts-ignore */}
-							<p className="">Expected Grade: PSA {data[fileName]["grade"]}</p>
+                <div className="col-span-3">
+                  {/* 
+                  // @ts-ignore */}
+                  <p className="text-black">{data[fileName]["summary"]}</p>
+                  <br></br>
 
-							<br></br>
+                  {/* 
+                  // @ts-ignore */}
+                  <p className="text-black">Expected Grade: PSA {data[fileName]["grade"]}</p>
 
-							{/* 
-              // @ts-ignore */}
-							<p className="">Raw Price: ${data[fileName]["raw_price"]}</p>
-							{/* 
-              // @ts-ignore */}
-							<p className="">Graded Price: ${data[fileName]["graded_price"]}</p>
+                  <br></br>
 
-							{/* 
-              // @ts-ignore */}
-							<p className="">{data[fileName]["value_increase"]}</p>
-						</div>
+                  {/* 
+                  // @ts-ignore */}
+                  <p className="text-black">Raw Price: ${data[fileName]["raw_price"]}</p>
+                  {/* 
+                  // @ts-ignore */}
+                  <p className="text-black">Graded Price: ${data[fileName]["graded_price"]}</p>
+
+                  {/* 
+                  // @ts-ignore */}
+                  <p className="text-black">{data[fileName]["value_increase"]}</p>
+                  </div>
+                </div>
+              </div>
 						<Button
 							onClick={() => {
 								setStep(0)
@@ -202,7 +212,7 @@ const ImageProcessor = () => {
 								setIsProcessing(false)
 							}}
 						>
-							Start Over
+							Scan next card
 						</Button>
 					</div>
 				)
@@ -211,9 +221,16 @@ const ImageProcessor = () => {
 		}
 	}
 
+
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gray-100">
-			<div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">{renderStep()}</div>
+      {step == 4 && (
+        <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-4xl">{renderStep()}</div>
+      )}
+
+      {step != 4 && (
+        <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">{renderStep()}</div>
+        )}
 		</div>
 	)
 }

@@ -25,7 +25,7 @@ export default function TestimonialsSection() {
         <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-md">
-              <p className="text-muted-foreground mb-4">"{testimonial.quote}"</p>
+              <p className="text-muted-foreground mb-4 text-black">"{testimonial.quote}"</p>
               <div className="font-semibold text-theme-green">{testimonial.name}</div>
               <div className="text-sm text-muted-foreground">{testimonial.role}</div>
             </div>

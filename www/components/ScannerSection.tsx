@@ -76,7 +76,7 @@ export default function ScannerSection() {
               {/* Scanner line - only visible during scanning phase */}
               {!scannerComplete && (
                 <div
-                  className="absolute inset-x-0 h-1 bg-gradient-to-r from-theme-green to-theme-green/60 z-10 transition-transform duration-100 ease-linear shadow-lg"
+                  className="absolute inset-x-0 h-8 bg-gradient-to-r from-theme-green to-theme-green/60 z-10 transition-transform duration-100 ease-linear shadow-lg"
                   style={{ top: `${scrollPosition}%` }}
                 />
               )}
@@ -94,9 +94,15 @@ export default function ScannerSection() {
                   }}
                 >
                   <h2 className="text-4xl font-bold mb-4 text-theme-green">Welcome to Our Innovation</h2>
+<<<<<<< Updated upstream
                   <p className="text-lg mb-6">
                     Experience the future of grading quality sports memorabilia with our cutting-edge solutions. As you scroll, watch our
                     scanner analyze and grade the card in real time.
+=======
+                  <p className="text-lg mb-6 text-black">
+                    Experience the future of technology with our cutting-edge solutions. As you scroll, watch our
+                    scanner analyze and process information in real-time.
+>>>>>>> Stashed changes
                   </p>
                   <button className="bg-theme-green text-theme-beige px-6 py-2 rounded-full hover:bg-theme-green/90 transition-colors">
                     Learn More
