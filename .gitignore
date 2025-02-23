@@ -43,5 +43,4 @@ next-env.d.ts
 venv/
 processed_cards/
 pictures3
-
-scrape/pictures3
+pictures
