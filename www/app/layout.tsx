@@ -4,7 +4,7 @@ import { Public_Sans } from 'next/font/google'
 import './globals.css'
 
 export const metadata: Metadata = {
-	title: 'v0 App',
+	title: 'GradeRef',
 	description: "Experience our revolutionary card grading technology that's changing how card collectors assess, value, and trade their cards with confidence and transparency",
 }
 
