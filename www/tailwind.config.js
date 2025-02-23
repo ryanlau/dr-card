@@ -58,6 +58,43 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      keyframes: {
+        ripple1: {
+          "0%": {
+            strokeDashoffset: "1000",
+            opacity: "1",
+          },
+          "100%": {
+            strokeDashoffset: "0",
+            opacity: "0",
+          },
+        },
+        ripple2: {
+          "0%": {
+            strokeDashoffset: "1000",
+            opacity: "0.7",
+          },
+          "100%": {
+            strokeDashoffset: "0",
+            opacity: "0",
+          },
+        },
+        ripple3: {
+          "0%": {
+            strokeDashoffset: "1000",
+            opacity: "0.4",
+          },
+          "100%": {
+            strokeDashoffset: "0",
+            opacity: "0",
+          },
+        },
+      },
+      animation: {
+        "ripple-1": "ripple1 3s ease-out infinite",
+        "ripple-2": "ripple2 3s ease-out infinite 1s",
+        "ripple-3": "ripple3 3s ease-out infinite 2s",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
