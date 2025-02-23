@@ -13,8 +13,8 @@ import DraggableQuadrilateral from "@/components/DraggableQuadrilateral"
 
 const data = {
   "LeBronJames.jpg" : {
-    "raw_price" : 1000,
-    "graded_price" : 1500,
+    "raw_price" : 3,
+    "graded_price" : 85,
     "grade" : 9
   }, 
   "PatrickMahomes.jpg" : {
