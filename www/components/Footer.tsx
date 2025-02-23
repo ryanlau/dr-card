@@ -6,8 +6,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">About Us</h3>
             <p className="text-theme-beige/80">
-              We are pioneers in scanner technology, revolutionizing data processing for businesses worldwide.
-            </p>
+            We are innovators in AI-driven sports card grading, making the hobby more accessible, transparent, and fair for collectors everywhere.            </p>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
@@ -42,7 +41,15 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-theme-beige/20 text-center text-theme-beige/80">
-          © 2024 Scanner Technology Inc. All rights reserved.
+        © 2024 GradeRef. All rights reserved.
+
+
+
+
+
+
+
+
         </div>
       </div>
     </footer>

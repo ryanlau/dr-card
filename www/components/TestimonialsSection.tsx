@@ -2,20 +2,21 @@ export default function TestimonialsSection() {
   const testimonials = [
     {
       name: "John Doe",
-      role: "CEO, TechCorp",
-      quote: "This scanner technology has transformed our data processing capabilities.",
+      role: "Collector & Hobbyist",
+      quote: "This grading technology has completely changed the way I approach my collection—fast, fair, and incredibly accurate.",
     },
     {
       name: "Jane Smith",
-      role: "CTO, InnovateCo",
-      quote: "We've seen a 50% increase in efficiency since implementing this solution.",
+      role: "Sports Memorabilia Dealer",
+      quote: "With instant AI-driven grading, I can now make more informed buying and selling decisions without the long wait times.",
     },
     {
       name: "Alex Johnson",
-      role: "Data Scientist, AnalyticsPro",
-      quote: "The accuracy and speed of this scanner are unparalleled in the industry.",
+      role: "Trading Card Investor",
+      quote: "Finally, a grading system that removes the subjectivity and makes sports card investing more transparent and accessible.",
     },
   ]
+
 
   return (
     <section className="py-20 bg-theme-beige">
