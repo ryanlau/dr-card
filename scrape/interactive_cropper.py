@@ -15,21 +15,18 @@ class CardCropper:
         
     def mouse_callback(self, event, x, y, flags, param):
         if event == cv2.EVENT_LBUTTONDOWN:
-            # Find the closest point
-            distances = [np.sqrt((x - px)**2 + (y - py)**2) for px, py in self.points]
-            self.current_point = np.argmin(distances)
-            self.dragging = True
-            self.points[self.current_point] = (x, y)
-            self.display_image()
-                    
+            # Add new point if we have less than 4 points
+            if len(self.points) < 4:
+                self.points.append((x, y))
+                self.display_image()
+            
         elif event == cv2.EVENT_MOUSEMOVE:
-            if self.dragging:
+            if self.dragging and self.current_point is not None:
                 self.points[self.current_point] = (x, y)
                 self.display_image()
                 
         elif event == cv2.EVENT_LBUTTONUP:
             self.dragging = False
-            self.current_point = None
 
     def display_image(self):
         display = self.image.copy()
@@ -54,45 +51,8 @@ class CardCropper:
             print(f"Could not read image: {image_path}")
             return False
             
-        # Convert to grayscale and apply edge detection
-        gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-        edges = cv2.Canny(blurred, 50, 150)
-        
-        # Find contours
-        contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        
-        if contours:
-            # Find the largest contour (assuming it's the card)
-            largest_contour = max(contours, key=cv2.contourArea)
-            
-            # Get the minimum area rectangle
-            rect = cv2.minAreaRect(largest_contour)
-            box = cv2.boxPoints(rect)
-            box = np.int32(box)
-            
-            # Sort the points to ensure consistent ordering
-            box = sorted(box, key=lambda x: x[0])  # Sort by x
-            left_pts = box[:2]
-            right_pts = box[2:]
-            left_pts = sorted(left_pts, key=lambda x: x[1])  # Sort by y
-            right_pts = sorted(right_pts, key=lambda x: x[1])
-            self.points = [
-                tuple(map(int, left_pts[0])),   # Top-left
-                tuple(map(int, right_pts[0])),  # Top-right
-                tuple(map(int, right_pts[1])),  # Bottom-right
-                tuple(map(int, left_pts[1]))    # Bottom-left
-            ]
-        else:
-            # Fallback to simple margin-based corners if no contours found
-            h, w = self.image.shape[:2]
-            margin = min(w, h) // 4
-            self.points = [
-                (margin, margin),  # Top-left
-                (w-margin, margin),  # Top-right
-                (w-margin, h-margin),  # Bottom-right
-                (margin, h-margin)  # Bottom-left
-            ]
+        # Initialize empty points list
+        self.points = []
         
         cv2.namedWindow(self.window_name)
         cv2.setMouseCallback(self.window_name, self.mouse_callback)
@@ -102,7 +62,14 @@ class CardCropper:
         while True:
             key = cv2.waitKey(1) & 0xFF
             
-            if key == ord('s'):  # Save and continue
+            # Handle number keys 1-4 for point selection
+            if ord('1') <= key <= ord('4'):
+                point_idx = key - ord('1')  # Convert to 0-based index
+                if point_idx < len(self.points):
+                    self.current_point = point_idx
+                    self.dragging = True
+            
+            elif key == ord('s'):  # Save and continue
                 if len(self.points) == 4:
                     self.save_cropped_image(image_path, output_dir, metadata_path)
                     break
@@ -183,7 +150,7 @@ class CardCropper:
         with open(metadata_path, 'a') as f:
             f.write(json.dumps(metadata) + '\n')
 
-def process_directory(input_dir="pictures", output_dir="training_data", metadata_file="crop_metadata.jsonl"):
+def process_directory(input_dir="scrape/pictures3", output_dir="scrape/training_data3", metadata_file="scrape/crop_metadata3.jsonl"):
     input_path = Path(input_dir)
     output_path = Path(output_dir)
     output_path.mkdir(exist_ok=True)

@@ -6,3 +6,4 @@ albumentations>=1.0.3
 Pillow>=8.3.1 
 tqdm>=4.67.1
 matplotlib>=3.4.3
+aiohttp>=3.8.1
